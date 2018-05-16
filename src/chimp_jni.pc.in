@@ -1,0 +1,9 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+libdir=${prefix}/lib/chimp_jni
+includedir=${prefix}/include
+
+Name: chimp_jni
+Description: JNI-Wrapper for the hybrid task planner CHIMP
+Version: 0.0.1
+Libs: -L${libdir} -lchimp_jni
+Cflags: -I${includedir}
