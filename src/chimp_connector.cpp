@@ -1,6 +1,7 @@
 #include "chimp_jni/chimp_connector.hpp"
 #include "chimp_jni/jni_helper.hpp"
 #include <iostream>
+#include <stdlib.h>
 
 namespace chimp_jni
 {
@@ -16,7 +17,11 @@ ChimpConnector::~ChimpConnector()
 Plan ChimpConnector::callChimp()
 {
     using namespace std;
-    string chimp_path = "-Djava.class.path=.:/home/sebastian/learn/jni/chimp.jar"; // TODO: Adapt path
+    // string chimp_path = "-Djava.class.path=.:/home/sebastian/learn/jni/chimp.jar"; // TODO: Adapt path
+    
+
+    string env_classpath = getenv("CLASSPATH");
+    string chimp_path = "-Djava.class.path=" + env_classpath;
 
     JavaVM *jvm; // Pointer to the JVM (Java Virtual Machine)
     JNIEnv *env; // Pointer to native interface
@@ -24,7 +29,7 @@ Plan ChimpConnector::callChimp()
     JavaVMInitArgs vm_args;                      // Initialization arguments
     JavaVMOption *options = new JavaVMOption[1]; // JVM invocation options
     vector<char> chimp_path_vec(chimp_path.begin(), chimp_path.end());
-    chimp_path_vec.push_back('\0');
+    chimp_path_vec.push_back('\0'); 
     options[0].optionString = &chimp_path_vec[0];
     vm_args.version = JNI_VERSION_1_6; // minimum Java version
     vm_args.nOptions = 1;              // number of options
