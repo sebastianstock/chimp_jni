@@ -1,0 +1,30 @@
+<package>
+    <description brief="JNI-wrapper for CHIMP">
+This is JNI-wrapper for the hierarchical hybrid planner CHIMP that is written in Java.
+    </description>
+    <author>Sebastian Stock/sebastian.stock@dfki.de</author>
+    <maintainer>Sebastian Stock/sebastian.stock@dfki.de</maintainer>
+    <license>New BSD</license>
+    <url></url>
+    <logo>...</logo>
+
+    <depend package="jni"/>
+
+    <keywords>
+        <keyword>planning</keyword>
+    </keywords>
+    <stage>-1</stage>
+
+    <!-- <use>single project</use> -->
+    <use>multi project</use>
+    <!-- <use>external</use> -->
+
+    <activity>active</activity>
+    <!-- <activity>pending</activity> -->
+    <!-- <activity>discontinued</activity> -->
+
+<classifiers>
+    <classifier>c++</classifier>
+    <classifier>ubuntu</classifier>
+</classifiers>
+</package>
