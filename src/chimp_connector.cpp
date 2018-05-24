@@ -8,45 +8,40 @@ namespace chimp_jni
 
 ChimpConnector::ChimpConnector()
 {
+    initJvm();
 }
 
 ChimpConnector::~ChimpConnector()
 {
+    jvm->DestroyJavaVM();
 }
 
-Plan ChimpConnector::callChimp()
+void ChimpConnector::initJvm()
 {
-    using namespace std;
-    // string chimp_path = "-Djava.class.path=.:/home/sebastian/learn/jni/chimp.jar"; // TODO: Adapt path
-    
+    std::string env_classpath = getenv("CLASSPATH");
+    std::string chimp_path = "-Djava.class.path=" + env_classpath;
 
-    string env_classpath = getenv("CLASSPATH");
-    string chimp_path = "-Djava.class.path=" + env_classpath;
-
-    JavaVM *jvm; // Pointer to the JVM (Java Virtual Machine)
-    JNIEnv *env; // Pointer to native interface
-        //================== prepare loading of Java VM ============================
     JavaVMInitArgs vm_args;                      // Initialization arguments
     JavaVMOption *options = new JavaVMOption[1]; // JVM invocation options
-    vector<char> chimp_path_vec(chimp_path.begin(), chimp_path.end());
-    chimp_path_vec.push_back('\0'); 
+    std::vector<char> chimp_path_vec(chimp_path.begin(), chimp_path.end());
+    chimp_path_vec.push_back('\0');
     options[0].optionString = &chimp_path_vec[0];
     vm_args.version = JNI_VERSION_1_6; // minimum Java version
     vm_args.nOptions = 1;              // number of options
     vm_args.options = options;
     vm_args.ignoreUnrecognized = false; // invalid options make the JVM init fail
-    //=============== load and initialize Java VM and JNI interface =============
     jint rc = JNI_CreateJavaVM(&jvm, (void **)&env, &vm_args);
     delete options;
     if (rc != JNI_OK)
     {
-        delete jvm;
-        delete env;
-        cerr << "ERROR: could not create vm\n";
+        std::cerr << "ERROR: could not create vm\n";
         throw JniParsingException("Could not create VM.");
     }
+}
 
-    //=============== Call CHIMP ==================================
+Plan ChimpConnector::callChimp()
+{
+    using namespace std;
 
     jclass clsCHIMPConnector = env->FindClass("examples/CHIMPConnector"); // try to find the class
     jclass clsPlanResult = env->FindClass("examples/CHIMPConnector$PlanResult");
@@ -110,7 +105,6 @@ Plan ChimpConnector::callChimp()
         throw new JniException("Could not create ChimpConnector object.");
     }
     env->DeleteLocalRef(chimpConnector);
-    jvm->DestroyJavaVM();
     return resulting_plan;
 }
 
