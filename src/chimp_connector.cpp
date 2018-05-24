@@ -9,6 +9,7 @@ namespace chimp_jni
 ChimpConnector::ChimpConnector()
 {
     initJvm();
+    setupChimpClasses();
 }
 
 ChimpConnector::~ChimpConnector()
@@ -39,44 +40,71 @@ void ChimpConnector::initJvm()
     }
 }
 
-Plan ChimpConnector::callChimp()
+void ChimpConnector::setupChimpClasses()
 {
-    using namespace std;
+    loadChimpConnectorCls();
+    loadConnectorCTtorMethodID();
+    loadPlanMethodID();
+}
 
-    jclass clsCHIMPConnector = env->FindClass("examples/CHIMPConnector"); // try to find the class
-    jclass clsPlanResult = env->FindClass("examples/CHIMPConnector$PlanResult");
-    if (clsCHIMPConnector == nullptr || clsPlanResult == nullptr)
+void ChimpConnector::loadChimpConnectorCls()
+{
+    std::string chimp_connector_classname = "examples/CHIMPConnector";
+    clsCHIMPConnector = env->FindClass(chimp_connector_classname.c_str()); // try to find the class
+    if (clsCHIMPConnector == nullptr)
     {
-        cerr << "ERROR: class examples/CHIMPConnector or examples/CHIMPConnector$PlanResult not found!\n";
-        jvm->DestroyJavaVM();
-        throw JniException("class examples/CHIMPConnector or examples/CHIMPConnector$PlanResult not found.");
+        std::cerr << "ERROR: class " << chimp_connector_classname << " not found!" << std::endl;
+        throw JniException("class " + chimp_connector_classname + " not found.");
     }
-    // create a CHIMPConnector object
-    jmethodID connectorCtor = env->GetMethodID(clsCHIMPConnector, "<init>", "()V");
-    if (connectorCtor == nullptr)
+}
+
+void ChimpConnector::loadConnectorCTtorMethodID()
+{
+    connectorCtorMethodID = env->GetMethodID(clsCHIMPConnector, "<init>", "()V");
+    if (connectorCtorMethodID == nullptr)
     {
-        cerr << "ERROR: constructor not found !" << endl;
+        std::cerr << "ERROR: constructor not found !" << std::endl;
         jvm->DestroyJavaVM();
         throw JniException("Constructor for CHIMPConnector not found.");
     }
+}
 
-    jobject chimpConnector = env->NewObject(clsCHIMPConnector, connectorCtor);
-    // cout << "Object succesfully constructed !" << endl;
+// jclass ChimpConnector::createPlanResultCls()
+// {
+//     std::string plan_result_classname = "examples/CHIMPConnector$PlanResult";
+//     jclass clsPlanResult = env->FindClass(plan_result_classname.c_str());
+//     if (clsPlanResult == nullptr)
+//     {
+//         std::cerr << "ERROR: class " << plan_result_classname << " not found!" << std::endl;
+//         throw JniException("class "  + plan_result_classname + " not found.");
+//     }
+// }
+
+void ChimpConnector::loadPlanMethodID()
+{
+    std::string planMethodSignature = "(Ljava/lang/String;Ljava/lang/String;)Lexamples/CHIMPConnector$PlanResult;";
+    std::string planMethodName = "plan";
+    planMethodID = env->GetMethodID(clsCHIMPConnector, planMethodName.c_str(),
+                                    planMethodSignature.c_str());
+    if (planMethodID == nullptr)
+    {
+        std::cerr << "No plan method !!" << std::endl;
+        jvm->DestroyJavaVM();
+        throw JniException("No method named 'plan'.");
+    }
+}
+
+Plan ChimpConnector::callChimp()
+{
+    jobject chimpConnector = env->NewObject(clsCHIMPConnector, connectorCtorMethodID);
 
     chimp_jni::Plan resulting_plan;
     if (chimpConnector)
     { // start planning
-        jmethodID planMethod = env->GetMethodID(clsCHIMPConnector, "plan",
-                                                "(Ljava/lang/String;Ljava/lang/String;)Lexamples/CHIMPConnector$PlanResult;");
-        if (planMethod == nullptr)
-        {
-            cerr << "No plan method !!" << endl;
-            jvm->DestroyJavaVM();
-            throw JniException("No method named 'plan'.");
-        }
+
         jstring domainPath = env->NewStringUTF("domain.ddl");
         jstring problemPath = env->NewStringUTF("problem.pdl");
-        jobject plan = env->CallObjectMethod(chimpConnector, planMethod, problemPath, domainPath);
+        jobject plan = env->CallObjectMethod(chimpConnector, planMethodID, problemPath, domainPath);
         env->DeleteLocalRef(domainPath);
         env->DeleteLocalRef(problemPath);
 
@@ -89,12 +117,12 @@ Plan ChimpConnector::callChimp()
             resulting_plan.fluents = chimp_jni::extractChimpFluentArrayField(env, plan, "fluents");
             for (chimp_jni::ChimpFluent fluent : resulting_plan.fluents)
             {
-                cout << fluent.id << "  " << fluent.name << "\n";
+                std::cout << fluent.id << "  " << fluent.name << "\n";
             }
         }
         catch (chimp_jni::JniParsingException &e)
         {
-            cout << e.what() << endl;
+            std::cout << e.what() << std::endl;
         }
 
         env->DeleteLocalRef(plan);
