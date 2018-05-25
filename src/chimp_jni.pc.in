@@ -6,4 +6,4 @@ Name: chimp_jni
 Description: JNI-Wrapper for the hybrid task planner CHIMP
 Version: 0.0.1
 Libs: -L${libdir} -lchimp_jni
-Cflags: -I${includedir}
+Cflags: -I${includedir} -I@JNI_INCLUDE_DIRS@
