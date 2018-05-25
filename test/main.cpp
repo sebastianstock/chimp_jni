@@ -3,6 +3,7 @@
 #include <chimp_jni/chimp_fluent.hpp>
 
 #include <iostream>
+#include <stdlib.h>
 
 int main(int argc, char **args)
 {

@@ -1,7 +1,6 @@
 #include "chimp_jni/chimp_connector.hpp"
 #include "chimp_jni/jni_helper.hpp"
 #include <iostream>
-#include <stdlib.h>
 
 namespace chimp_jni
 {
