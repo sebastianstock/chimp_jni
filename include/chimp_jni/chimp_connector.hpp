@@ -2,6 +2,7 @@
 #define CHIMP_CONNECTOR_HPP
 
 #include <jni.h>
+#include <string>
 #include "plan.hpp"
 
 namespace chimp_jni
@@ -11,13 +12,16 @@ class ChimpConnector
 {
 
   public:
-    ChimpConnector();
+    ChimpConnector(std::string chimpPath);
 
     ~ChimpConnector();
 
-    Plan callChimp();
+    Plan callChimp(std::string domainPath, std::string problemPath);
 
   private:
+
+    static const std::string PLANMETHODSIGNATURE;
+    static const std::string PLANMETHODNAME;
 
     JavaVM *jvm; // Pointer to the JVM (Java Virtual Machine)
     JNIEnv *env; // Pointer to native interface
@@ -25,12 +29,13 @@ class ChimpConnector
     jmethodID connectorCtorMethodID;
     jmethodID planMethodID;
 
-    void initJvm();
+    void initJvm(std::string chimpPath);
     void setupChimpClasses();
     void loadChimpConnectorCls();
     // jclass createPlanResultCls();
     void loadConnectorCTtorMethodID();
     void loadPlanMethodID();
+    Plan extractPlan(jobject &jPlan);
 };
 
 } // namespace chimp_jni
