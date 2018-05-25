@@ -32,7 +32,6 @@ class ChimpConnector
     void initJvm(std::string chimpPath);
     void setupChimpClasses();
     void loadChimpConnectorCls();
-    // jclass createPlanResultCls();
     void loadConnectorCTtorMethodID();
     void loadPlanMethodID();
     Plan extractPlan(jobject &jPlan);

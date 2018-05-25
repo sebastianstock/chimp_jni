@@ -69,17 +69,6 @@ void ChimpConnector::loadConnectorCTtorMethodID()
     }
 }
 
-// jclass ChimpConnector::createPlanResultCls()
-// {
-//     std::string plan_result_classname = "examples/CHIMPConnector$PlanResult";
-//     jclass clsPlanResult = env->FindClass(plan_result_classname.c_str());
-//     if (clsPlanResult == nullptr)
-//     {
-//         std::cerr << "ERROR: class " << plan_result_classname << " not found!" << std::endl;
-//         throw JniException("class "  + plan_result_classname + " not found.");
-//     }
-// }
-
 void ChimpConnector::loadPlanMethodID()
 {
 
