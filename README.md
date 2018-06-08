@@ -4,6 +4,15 @@ A JNI-wrapper for the hierarchical hybrid planner [CHIMP](https://github.com/seb
 
 ## Installation
 
+### Java
+
+Install java
+```bash
+sudo apt-get install openjdk-8-jdk
+```
+and add the line `JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"` to `/etc/environment`.
+
+
 ### CHIMP
 
 **TODO:**
