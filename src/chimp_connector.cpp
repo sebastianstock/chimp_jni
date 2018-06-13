@@ -16,6 +16,7 @@ ChimpConnector::ChimpConnector(std::string chimpPath)
 
 ChimpConnector::~ChimpConnector()
 {
+    jvm->DetachCurrentThread();
     jvm->DestroyJavaVM();
 }
 
@@ -101,6 +102,7 @@ Plan ChimpConnector::extractPlan(jobject &jPlan)
 
 Plan ChimpConnector::callChimp(std::string domainPath, std::string problemPath)
 {
+    jvm->AttachCurrentThread((void **) &env, NULL);
     jobject jChimpConnector = env->NewObject(clsCHIMPConnector, connectorCtorMethodID);
     if (!jChimpConnector)
         throw new JniException("Could not create ChimpConnector object.");
