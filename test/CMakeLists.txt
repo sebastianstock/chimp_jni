@@ -1,2 +1,2 @@
 add_executable(manual_test main.cpp)
-target_link_libraries(manual_test chimp_jni)
+target_link_libraries(manual_test chimp_jni pthread)
