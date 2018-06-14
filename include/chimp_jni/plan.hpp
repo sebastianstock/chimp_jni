@@ -16,16 +16,9 @@ struct Plan
     bool found_plan;
 };
 
-std::ostream &operator<<(std::ostream &os, const Plan &plan)
-{
-    os << "found plan? " << plan.found_plan << "\n";
-    os << "Actions:\n";
-    for (ChimpFluent fluent : plan.fluents)
-    {
-        os << fluent.id << "  " << fluent.name << "\n";
-    }
-    return os;
-}
+
+std::ostream &operator<<(std::ostream &os, const Plan &plan);
+
 
 } // namespace chimp_jni
 

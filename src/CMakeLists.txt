@@ -5,6 +5,7 @@ add_library(chimp_jni SHARED
    ../include/chimp_jni/plan.hpp
    ../include/chimp_jni/jni_helper.hpp
    jni_helper.cpp
+   plan.cpp
 )
 
 target_link_libraries(chimp_jni ${JNI_LIBRARIES})
