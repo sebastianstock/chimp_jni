@@ -9,6 +9,7 @@ This is JNI-wrapper for the hierarchical hybrid planner CHIMP that is written in
     <logo>...</logo>
 
     <depend package="jni"/>
+    <depend package="pbr/chimp"/>
 
     <keywords>
         <keyword>planning</keyword>
