@@ -32,7 +32,7 @@ void ChimpConnector::initJvm(std::string chimpPath)
     vm_args.options = options;
     vm_args.ignoreUnrecognized = false; // invalid options make the JVM init fail
     jint rc = JNI_CreateJavaVM(&jvm, (void **)&env, &vm_args);
-    delete options;
+    delete[] options;
     if (rc != JNI_OK)
     {
         std::cerr << "ERROR: could not create vm\n";
