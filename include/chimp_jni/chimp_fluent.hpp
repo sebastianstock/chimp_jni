@@ -21,7 +21,7 @@ struct ChimpFluent {
     long eet; ///< earliest end time
     long let; ///< latest end time
 
-    bool operator < (const ChimpFluent& other)
+    bool operator < (const ChimpFluent& other) const
     {
         return id < other.id;
     }
