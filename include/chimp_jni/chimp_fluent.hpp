@@ -15,11 +15,16 @@ struct ChimpFluent {
     int id;
     std::string name;
     ChimpFluentType type;
-    
+
     long est; ///< earliest start time
     long lst; ///< latest start time
     long eet; ///< earliest end time
     long let; ///< latest end time
+
+    bool operator < (const ChimpFluent& other)
+    {
+        return id < other.id;
+    }
 };
 
 }
