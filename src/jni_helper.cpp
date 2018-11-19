@@ -96,6 +96,8 @@ ChimpFluent convertJobjectToChimpFluent(JNIEnv *env, const jobject &obj)
     fluent.lst = extractLongField(env, obj, "lst");
     fluent.eet = extractLongField(env, obj, "eet");
     fluent.let = extractLongField(env, obj, "let");
+    fluent.preconditions = extractChimpFluentArrayField(env, obj, "preconditions");
+
     return fluent;
 }
 
@@ -107,6 +109,7 @@ std::vector<ChimpFluent> extractChimpFluentArrayField(JNIEnv *env, const jobject
         throw JniParsingException {std::string("Parsing exception. Field does not exist: ") + field_name};
     }
     jobject arr_obj = env->GetObjectField(obj, field_id);
+    if (arr_obj == NULL) return std::vector<ChimpFluent>();
 
     jobjectArray *arr_arr = reinterpret_cast<jobjectArray *>(&arr_obj);
 

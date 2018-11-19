@@ -2,6 +2,7 @@
 #define CHIMP_FLUENT_HPP
 
 #include <string>
+#include <vector>
 
 namespace chimp_jni
 {
@@ -20,6 +21,8 @@ struct ChimpFluent {
     long lst; ///< latest start time
     long eet; ///< earliest end time
     long let; ///< latest end time
+
+    std::vector<ChimpFluent> preconditions;
 
     bool operator < (const ChimpFluent& other) const
     {
