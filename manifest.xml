@@ -5,8 +5,8 @@ This is JNI-wrapper for the hierarchical hybrid planner CHIMP that is written in
     <author>Sebastian Stock/sebastian.stock@dfki.de</author>
     <maintainer>Sebastian Stock/sebastian.stock@dfki.de</maintainer>
     <license>New BSD</license>
-    <url></url>
-    <logo>...</logo>
+    <url>https://git.hb.dfki.de/pbr/chimp_jni</url>
+    <!-- <logo>...</logo> -->
 
     <depend package="jni"/>
     <depend package="pbr/chimp"/>
