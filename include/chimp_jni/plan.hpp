@@ -14,6 +14,8 @@ struct Plan
     std::vector<chimp_jni::ChimpFluent> fluents;
 
     bool found_plan;
+    bool exception;
+    std::string exception_description;
 };
 
 

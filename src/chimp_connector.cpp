@@ -40,8 +40,32 @@ void ChimpConnector::initJvm(std::string chimpPath)
     }
 }
 
+void ChimpConnector::loadExceptionHandlingClasses()
+{
+    clsThrowable = env->FindClass("java/lang/Throwable");
+    throwableGetCause =
+        env->GetMethodID(clsThrowable,
+                    "getCause",
+                    "()Ljava/lang/Throwable;");
+    throwableGetStackTrace =
+        env->GetMethodID(clsThrowable,
+                    "getStackTrace",
+                    "()[Ljava/lang/StackTraceElement;");
+    throwableToString =
+        env->GetMethodID(clsThrowable,
+                    "toString",
+                    "()Ljava/lang/String;");
+
+    clsFrame = env->FindClass("java/lang/StackTraceElement");
+    frameToString =
+        env->GetMethodID(clsFrame,
+                    "toString",
+                    "()Ljava/lang/String;");
+}
+
 void ChimpConnector::setupChimpClasses()
 {
+    loadExceptionHandlingClasses();
     loadChimpConnectorCls();
     loadConnectorCTtorMethodID();
     loadPlanMethodID();
@@ -110,15 +134,99 @@ Plan ChimpConnector::callChimp(std::string domainPath, std::string problemPath)
     // start planning
     jstring jDomainPath = env->NewStringUTF(domainPath.c_str());
     jstring jProblemPath = env->NewStringUTF(problemPath.c_str());
+
+    // extract result and cleanup
+    Plan resultingPlan;
     jobject jPlan = env->CallObjectMethod(jChimpConnector, planMethodID, jProblemPath, jDomainPath);
+    if (env->ExceptionCheck())
+    {
+        resultingPlan.found_plan = false;
+        resultingPlan.exception = true;
+        jthrowable flag = env->ExceptionOccurred();
+        appendExceptionTraceMessages(resultingPlan.exception_description, flag);
+        env->ExceptionClear();
+    }
+    else
+    {
+        resultingPlan = extractPlan(jPlan);
+    }
+
+    env->DeleteLocalRef(jPlan);
     env->DeleteLocalRef(jDomainPath);
     env->DeleteLocalRef(jProblemPath);
 
-    // extract result and cleanup
-    Plan resultingPlan = extractPlan(jPlan);
-    env->DeleteLocalRef(jPlan);
     env->DeleteLocalRef(jChimpConnector);
     return resultingPlan;
+}
+
+void ChimpConnector::appendExceptionTraceMessages(std::string& exceptionString, jthrowable exception)
+{
+    // copied from: https://stackoverflow.com/a/10410117
+
+    // Get the array of StackTraceElements.
+    jobjectArray frames =
+    (jobjectArray) env->CallObjectMethod(exception, throwableToString);
+    jsize frames_length = env->GetArrayLength(frames);
+
+    // Add Throwable.toString() before descending
+    // stack trace messages.
+    if (0 != frames)
+    {
+        jstring msg_obj =
+        (jstring) env->CallObjectMethod(exception, throwableToString);
+        const char* msg_str = env->GetStringUTFChars(msg_obj, 0);
+
+        // If this is not the top-of-the-trace then
+        // this is a cause.
+        if (!exceptionString.empty())
+        {
+            exceptionString += "\nCaused by: ";
+            exceptionString += msg_str;
+        }
+        else
+        {
+            exceptionString = msg_str;
+        }
+
+        env->ReleaseStringUTFChars(msg_obj, msg_str);
+        env->DeleteLocalRef(msg_obj);
+    }
+
+    // Append stack trace messages if there are any.
+    if (frames_length > 0)
+    {
+        jsize i = 0;
+        for (i = 0; i < frames_length; i++)
+        {
+            // Get the string returned from the 'toString()'
+            // method of the next frame and append it to
+            // the error message.
+            jobject frame = env->GetObjectArrayElement(frames, i);
+            jstring msg_obj =
+            (jstring) env->CallObjectMethod(frame, frameToString);
+
+            const char* msg_str = env->GetStringUTFChars(msg_obj, 0);
+
+            exceptionString += "\n    ";
+            exceptionString += msg_str;
+
+            env->ReleaseStringUTFChars(msg_obj, msg_str);
+            env->DeleteLocalRef(msg_obj);
+            env->DeleteLocalRef(frame);
+        }
+    }
+
+    // If 'exception' has a cause then append the
+    // stack trace messages from the cause.
+    if (0 != frames)
+    {
+        jthrowable cause =
+        (jthrowable) env->CallObjectMethod(exception, throwableGetCause);
+        if (0 != cause)
+        {
+            appendExceptionTraceMessages(exceptionString, cause);
+        }
+    }
 }
 
 } // namespace chimp_jni

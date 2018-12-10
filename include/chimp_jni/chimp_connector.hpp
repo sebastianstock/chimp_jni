@@ -29,12 +29,21 @@ class ChimpConnector
     jmethodID connectorCtorMethodID;
     jmethodID planMethodID;
 
+    jclass clsThrowable;
+    jmethodID throwableGetStackTrace;
+    jmethodID throwableToString;
+    jmethodID throwableGetCause;
+    jclass clsFrame;
+    jmethodID frameToString;
+
     void initJvm(std::string chimpPath);
+    void loadExceptionHandlingClasses();
     void setupChimpClasses();
     void loadChimpConnectorCls();
     void loadConnectorCTtorMethodID();
     void loadPlanMethodID();
     Plan extractPlan(jobject &jPlan);
+    void appendExceptionTraceMessages(std::string& exceptionString, jthrowable exception);
 };
 
 } // namespace chimp_jni
