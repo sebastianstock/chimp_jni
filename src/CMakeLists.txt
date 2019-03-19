@@ -2,8 +2,11 @@ add_library(chimp_jni SHARED
    ../include/chimp_jni/chimp_connector.hpp
    chimp_connector.cpp
    ../include/chimp_jni/chimp_fluent.hpp
+   ../include/chimp_jni/fluent_constraint.hpp
    ../include/chimp_jni/plan.hpp
    ../include/chimp_jni/jni_helper.hpp
+   chimp_fluent.cpp
+   fluent_constraint.cpp
    jni_helper.cpp
    plan.cpp
 )

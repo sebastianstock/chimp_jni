@@ -6,6 +6,7 @@
 #include <vector>
 #include <stdexcept>
 #include "chimp_fluent.hpp"
+#include "fluent_constraint.hpp"
 
 namespace chimp_jni
 {
@@ -36,7 +37,11 @@ std::vector<std::string> extractStringArrayField(JNIEnv *env, const jobject &obj
 
 ChimpFluent convertJobjectToChimpFluent(JNIEnv *env, const jobject &obj);
 
+FluentConstraint convertJobjectToFluentConstraint(JNIEnv *env, const jobject &obj);
+
 std::vector<ChimpFluent> extractChimpFluentArrayField(JNIEnv *env, const jobject &obj, std::string field_name);
+
+std::vector<FluentConstraint> extractFluentConstraintArrayField(JNIEnv *env, const jobject &obj, std::string field_name);
 } // namespace chimp_jni
 
 #endif // JNI_HELPER_HPP

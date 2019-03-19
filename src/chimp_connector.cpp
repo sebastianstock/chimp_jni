@@ -115,6 +115,8 @@ Plan ChimpConnector::extractPlan(jobject &jPlan)
         // try
         // {
         resultingPlan.fluents = extractChimpFluentArrayField(env, jPlan, "fluents");
+        resultingPlan.all_fluents = extractChimpFluentArrayField(env, jPlan, "allFluents");
+        resultingPlan.constraints = extractFluentConstraintArrayField(env, jPlan, "fluentConstraints");
         // }
         // catch (JniParsingException &e)
         // {

@@ -3,19 +3,20 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 namespace chimp_jni
 {
 
 struct ChimpFluent {
 
-    enum ChimpFluentType {
-        TASK, ACTION, STATE
+    enum Type {
+        TASK, ACTION, STATE, PLANNED_STATE, UNDEFINED
     };
 
     int id;
     std::string name;
-    ChimpFluentType type;
+    Type type;
 
     long est; ///< earliest start time
     long lst; ///< latest start time
@@ -28,7 +29,14 @@ struct ChimpFluent {
     {
         return id < other.id;
     }
+
+    static std::map<std::string, Type> fluenttype_map ;
+    static std::map<Type, std::string> typenames_map;
+
+    static Type typeFromStr(std::string type_str);
 };
+
+std::ostream &operator<<(std::ostream &os, const ChimpFluent &constraint);
 
 }
 

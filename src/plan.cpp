@@ -9,8 +9,18 @@ std::ostream &operator<<(std::ostream &os, const Plan &plan)
     os << "Actions:\n";
     for (ChimpFluent fluent : plan.fluents)
     {
-        os << fluent.id << "  " << fluent.name << "\n";
+        os << fluent << "\n";
     }
+    os << "All fluents: \n";
+    for (ChimpFluent fluent : plan.all_fluents) 
+    {
+        os << fluent << "\n";
+    }
+    // os << "Constraints:\n";
+    // for (FluentConstraint con : plan.constraints)
+    // {
+    //     os << con << "\n";
+    // }
     return os;
 }
 }

@@ -32,11 +32,11 @@ int main(int argc, char **args)
     chimp_jni::ChimpConnector chimp(chimpPath);
     std::cout << "First test: " << std::endl;
     testChimp(chimp);
-    std::cout << "Second test: " << std::endl;
-    std::thread second(testChimp, std::ref(chimp));
-    second.join();
-    std::cout << "Third test: " << std::endl;
-    std::thread third(testChimp, std::ref(chimp));
-    third.join();
-    std::cout << "finished" << std::endl;
+    // std::cout << "Second test: " << std::endl;
+    // std::thread second(testChimp, std::ref(chimp));
+    // second.join();
+    // std::cout << "Third test: " << std::endl;
+    // std::thread third(testChimp, std::ref(chimp));
+    // third.join();
+    // std::cout << "finished" << std::endl;
 }
