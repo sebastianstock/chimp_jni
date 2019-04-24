@@ -151,6 +151,7 @@ Plan ChimpConnector::callChimp(std::string domainPath, std::string problemPath)
     else
     {
         resultingPlan = extractPlan(jPlan);
+        resultingPlan.exception = false;
     }
 
     env->DeleteLocalRef(jPlan);
